@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vladimir, Web Developer e studente di Informatica all'Università di Catania.">
+    <title>Vladimir - Web Developer</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Applica il tema salvato prima del render per evitare il flash
+        try {
+            const t = localStorage.getItem('theme');
+            if (t) document.documentElement.dataset.theme = t;
+        } catch (e) {}
+    </script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Vai al contenuto</a>
+
+    <header class="navbar">
+        <div class="container nav-inner">
+            <a href="#home" class="logo" aria-label="Vladimir, torna all'inizio">V</a>
+
+            <nav id="nav-menu" class="nav-menu" aria-label="Navigazione principale">
+                <ul class="nav-links">
+                    <li><a href="#about">Chi Sono</a></li>
+                    <li><a href="#projects">Progetti</a></li>
+                    <li><a href="#skills">Competenze</a></li>
+                    <li><a href="#contact">Contatti</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="icon-btn" id="theme-toggle" type="button" aria-label="Cambia tema">
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+                </button>
+                <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="nav-menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- HERO -->
+        <section id="home" class="hero">
+            <div class="container">
+                <p class="eyebrow">Portfolio</p>
+                <h1>Ciao, sono Vladimir</h1>
+                <p class="hero-sub">
+                    <span id="typed">Web Developer</span><span class="caret" aria-hidden="true"></span>
+                </p>
+                <div class="hero-actions">
+                    <a href="#projects" class="cta-btn">Vedi Progetti</a>
+                    <a href="#contact" class="ghost-btn">Contattami</a>
+                    <a href="https://github.com/zappullavlad" class="ghost-btn" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="section">
+            <div class="container narrow reveal">
+                <h2>Chi Sono</h2>
+                <p class="lead">Sono uno studente di Informatica all'Università di Catania, appassionato di sviluppo web e videogiochi. Lavoro su progetti personalizzati per clienti e amo imparare nuove tecnologie.</p>
+                <ul class="facts">
+                    <li><strong>Studio</strong><span>Informatica, UNICT</span></li>
+                    <li><strong>Ruolo</strong><span>Web Developer</span></li>
+                    <li><strong>Passioni</strong><span>Web e videogiochi</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="section alt">
+            <div class="container">
+                <h2 class="reveal">Ultimi Progetti</h2>
+                <div class="search-wrap reveal">
+                    <label for="project-search">Cerca un progetto</label>
+                    <input id="project-search" type="search" placeholder="es. meteo" autocomplete="off">
+                </div>
+                <div id="projects-grid" class="projects-grid"></div>
+                <div id="projects-empty" class="empty" hidden>
+                    <p>Nessun progetto corrisponde alla ricerca.</p>
+                    <button type="button" class="ghost-btn" id="clear-search">Mostra tutti i progetti</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="section">
+            <div class="container narrow reveal">
+                <h2>Competenze</h2>
+                <ul class="skills" id="skills-list"></ul>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="section contact">
+            <div class="container narrow reveal">
+                <h2>Contatti</h2>
+                <p class="lead">Interessato? Scrivimi!</p>
+
+                <form id="contact-form" class="contact-form" novalidate>
+                    <div class="field">
+                        <label for="cf-name">Nome</label>
+                        <input id="cf-name" name="name" type="text" required autocomplete="name">
+                        <p class="error" id="cf-name-err" hidden>Inserisci il tuo nome.</p>
+                    </div>
+                    <div class="field">
+                        <label for="cf-message">Messaggio</label>
+                        <textarea id="cf-message" name="message" rows="5" required></textarea>
+                        <p class="error" id="cf-message-err" hidden>Scrivi un messaggio prima di inviare.</p>
+                    </div>
+                    <button type="submit" class="cta-btn light">Invia Email</button>
+                </form>
+
+                <p class="alt-contact">
+                    Oppure scrivi a <a id="email-link" href="#"></a>
+                    <button type="button" class="copy-btn" id="copy-email">Copia indirizzo</button>
+                </p>
+                <p class="alt-contact">
+                    Codice e progetti su <a href="https://github.com/zappullavlad" target="_blank" rel="noopener">github.com/zappullavlad</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year">2026</span> Vladimir. Tutti i diritti riservati. · <a href="https://github.com/zappullavlad" target="_blank" rel="noopener">GitHub</a></p>
+    </footer>
+
+    <!-- Dettaglio progetto -->
+    <dialog id="project-dialog" class="project-dialog" aria-labelledby="dialog-title">
+        <form method="dialog" class="dialog-inner">
+            <button class="icon-btn dialog-close" value="close" aria-label="Chiudi">&times;</button>
+            <h3 id="dialog-title"></h3>
+            <p id="dialog-desc"></p>
+            <div id="dialog-links" class="dialog-links"></div>
+        </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
