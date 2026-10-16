@@ -1,250 +1,187 @@
-// =====================================================
-// CONTENUTI: modifica qui progetti, competenze ed email
-// =====================================================
-const EMAIL = 'zappullavlad@gmail.com';
+const pocoMovimento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (pocoMovimento) document.documentElement.classList.add('fermo');
 
-// Per ogni progetto aggiungi `demo` e/o `code` (URL) quando saranno online
-const PROJECTS = [
-    {
-        title: 'Todo App',
-        description: 'Applicazione per gestire liste di attività in tempo reale',
-        demo: null,
-        code: null
-    },
-    {
-        title: 'Weather App',
-        description: 'Meteo in tempo reale con API pubblica',
-        demo: null,
-        code: null
-    },
-    {
-        title: 'Calculator',
-        description: 'Calcolatore avanzato con dark mode',
-        demo: null,
-        code: null
+const limita = (valore, minimo = 0, massimo = 1) => Math.min(massimo, Math.max(minimo, valore));
+const tra = (da, a, quanto) => da + (a - da) * quanto;
+const frena = t => 1 - (1 - t) ** 3;
+const morbido = t => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2);
+
+// quanta strada è stata fatta dentro una sezione più alta dello schermo, da 0 a 1
+function avanzamento(sezione) {
+    const bordo = sezione.getBoundingClientRect();
+    const corsa = bordo.height - innerHeight;
+    return corsa > 0 ? limita(-bordo.top / corsa) : 0;
+}
+
+// IL PROFILO: lo stesso testo della pagina viene copiato nello schermo del portatile
+const profilo = document.getElementById('profilo');
+const schermoPortatile = document.getElementById('schermo-portatile');
+const copiaProfilo = profilo.cloneNode(true);
+copiaProfilo.removeAttribute('id');
+schermoPortatile.append(copiaProfilo);
+
+// il portatile è nascosto ai lettori di schermo solo dove il profilo è già scritto nella pagina
+const schermoStretto = matchMedia('(max-width: 760px)');
+const portatile = document.querySelector('.portatile');
+
+function chiLeggeIlProfilo() {
+    portatile.inert = schermoStretto.matches;
+    if (schermoStretto.matches) {
+        portatile.setAttribute('aria-hidden', 'true');
+    } else {
+        portatile.removeAttribute('aria-hidden');
     }
-];
-
-const SKILLS = ['JavaScript', 'React', 'HTML/CSS', 'Unity'];
-
-const ROLES = ['Web Developer', 'Studente Informatica UNICT', 'Appassionato di videogiochi'];
-
-// =====================================================
-
-document.documentElement.classList.add('js');
-
-const $ = (sel) => document.querySelector(sel);
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-// ---------- Toast ----------
-let toastTimer;
-function toast(msg) {
-    const el = $('#toast');
-    el.textContent = msg;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-// ---------- Tema chiaro/scuro ----------
-function currentTheme() {
-    const set = document.documentElement.dataset.theme;
-    if (set) return set;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+schermoStretto.addEventListener('change', chiLeggeIlProfilo);
+chiLeggeIlProfilo();
+
+// IL PORTATILE: si apre mentre si scorre, poi la vista gli gira davanti
+const scenaPortatile = document.querySelector('.scena--portatile');
+
+function muoviPortatile() {
+    const p = avanzamento(scenaPortatile);
+    const alto = portatile.offsetHeight;
+    const apre = morbido(limita((p - 0.03) / 0.42));
+    const avvicina = morbido(limita((p - 0.5) / 0.36));
+
+    // chiuso e visto dall'alto -> aperto -> di fronte, a tutto schermo
+    const apri = tra(tra(-89, 12, apre), 0, avvicina);
+    const inclina = tra(tra(-62, -14, apre), 0, avvicina);
+    const scala = tra(tra(0.5, 0.62, apre), 1, avvicina);
+    const chiuso = 0.1 * innerHeight - 0.72 * alto;
+    const aperto = 0.05 * innerHeight - 0.265 * alto;
+    const sposta = tra(tra(chiuso, aperto, apre), 0, avvicina);
+
+    // finché il portatile non è aperto, il pulsante dentro lo schermo non si può premere
+    scenaPortatile.classList.toggle('chiuso', apre < 0.95);
+
+    const stile = scenaPortatile.style;
+    stile.setProperty('--apri', apri.toFixed(2));
+    stile.setProperty('--inclina', inclina.toFixed(2));
+    stile.setProperty('--scala', scala.toFixed(4));
+    stile.setProperty('--sposta', sposta.toFixed(1));
+    stile.setProperty('--luce', limita((apre - 0.3) / 0.4).toFixed(3));
+    stile.setProperty('--intro', (1 - limita((p - 0.02) / 0.12)).toFixed(3));
 }
 
-$('#theme-toggle').addEventListener('click', () => {
-    const next = currentTheme() === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch (e) {}
-});
+// IL SITO DEI VINI: la finestra cresce entrando, poi il sito scorre dentro il telefono
+const finestra = document.getElementById('finestra');
+const scorriTelefono = document.getElementById('scorri-telefono');
+const passi = scorriTelefono.querySelectorAll('.passo');
 
-// ---------- Menu mobile ----------
-const menuToggle = $('#menu-toggle');
-const navMenu = $('#nav-menu');
+function muoviVini() {
+    const entrata = limita((innerHeight - finestra.getBoundingClientRect().top) / (innerHeight * 0.9));
+    finestra.style.setProperty('--s', tra(0.86, 1, frena(entrata)).toFixed(4));
 
-function setMenu(open) {
-    navMenu.classList.toggle('open', open);
-    menuToggle.setAttribute('aria-expanded', String(open));
-    menuToggle.setAttribute('aria-label', open ? 'Chiudi menu' : 'Apri menu');
+    const p = avanzamento(scorriTelefono);
+    scorriTelefono.style.setProperty('--scorri', p.toFixed(4));
+    // i testi cambiano quando nel telefono passano l'apertura, la vetrina e l'elenco
+    const quale = p < 0.14 ? 0 : p < 0.42 ? 1 : 2;
+    passi.forEach((passo, indice) => passo.classList.toggle('attivo', indice === quale));
 }
 
-menuToggle.addEventListener('click', () => setMenu(!navMenu.classList.contains('open')));
-navMenu.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && navMenu.classList.contains('open')) {
-        setMenu(false);
-        menuToggle.focus();
-    }
-});
+// Il link attivo della barra segue la sezione che sta a metà schermo
+const zone = document.querySelectorAll('main section[data-zona]');
+const linkBarra = document.querySelectorAll('.bar__nav a');
 
-// ---------- Progetti ----------
-const grid = $('#projects-grid');
-const empty = $('#projects-empty');
-const search = $('#project-search');
-
-function renderProjects(filter = '') {
-    const q = filter.trim().toLowerCase();
-    grid.innerHTML = '';
-    let shown = 0;
-
-    PROJECTS.forEach((p, i) => {
-        if (q && !(p.title + ' ' + p.description).toLowerCase().includes(q)) return;
-        shown++;
-        const card = document.createElement('article');
-        card.className = 'project-card';
-        card.innerHTML = `
-            <span class="project-num">${String(i + 1).padStart(2, '0')}</span>
-            <h3></h3>
-            <p></p>
-            <div><button type="button" class="btn">Vedi dettagli</button></div>`;
-        card.querySelector('h3').textContent = p.title;
-        card.querySelector('p').textContent = p.description;
-        card.querySelector('button').addEventListener('click', (e) => openProject(p, e.currentTarget));
-        grid.appendChild(card);
+function aggiornaZona() {
+    let corrente = zone[0];
+    zone.forEach(zona => {
+        if (zona.offsetParent !== null && zona.getBoundingClientRect().top <= innerHeight * 0.5) corrente = zona;
     });
 
-    empty.hidden = shown > 0;
-}
-
-search.addEventListener('input', () => renderProjects(search.value));
-$('#clear-search').addEventListener('click', () => {
-    search.value = '';
-    renderProjects();
-    search.focus();
-});
-
-// ---------- Dettaglio progetto ----------
-const dialog = $('#project-dialog');
-let lastTrigger = null;
-
-function openProject(p, trigger) {
-    lastTrigger = trigger;
-    $('#dialog-title').textContent = p.title;
-    $('#dialog-desc').textContent = p.description;
-
-    const links = $('#dialog-links');
-    links.innerHTML = '';
-    [['demo', 'Apri demo'], ['code', 'Vedi codice']].forEach(([key, label]) => {
-        if (!p[key]) return;
-        const a = document.createElement('a');
-        a.href = p[key];
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.className = key === 'demo' ? 'cta-btn' : 'ghost-btn';
-        a.textContent = label;
-        links.appendChild(a);
+    const ancora = corrente.id || 'inizio';
+    linkBarra.forEach(link => {
+        const attivo = link.getAttribute('href') === `#${ancora}`;
+        link.classList.toggle('active', attivo);
+        if (attivo) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
     });
-    if (!links.children.length) {
-        const note = document.createElement('p');
-        note.className = 'dialog-note';
-        note.textContent = 'Demo e codice saranno disponibili a breve.';
-        links.appendChild(note);
-    }
-
-    if (typeof dialog.showModal === 'function') dialog.showModal();
-    else dialog.setAttribute('open', '');
+    document.body.classList.toggle('sotto', scrollY > 8);
 }
 
-dialog.addEventListener('close', () => { if (lastTrigger) lastTrigger.focus(); });
-dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+let inAttesa = false;
 
-// ---------- Competenze ----------
-const skillsList = $('#skills-list');
-SKILLS.forEach((s) => {
-    const li = document.createElement('li');
-    li.className = 'skill';
-    li.textContent = s;
-    skillsList.appendChild(li);
-});
+function aggiornaTutto() {
+    inAttesa = false;
+    aggiornaZona();
+    if (pocoMovimento) return;
+    muoviPortatile();
+    muoviVini();
+}
 
-// ---------- Contatti ----------
-const emailLink = $('#email-link');
-emailLink.href = `mailto:${EMAIL}`;
-emailLink.textContent = EMAIL;
+function chiediAggiornamento() {
+    if (inAttesa) return;
+    inAttesa = true;
+    requestAnimationFrame(aggiornaTutto);
+}
 
-$('#copy-email').addEventListener('click', async () => {
+window.addEventListener('scroll', chiediAggiornamento, { passive: true });
+window.addEventListener('resize', chiediAggiornamento);
+window.addEventListener('load', chiediAggiornamento);
+aggiornaTutto();
+
+// ENTRATE: gli elementi compaiono sfalsati quando entrano nello schermo
+const daRivelare = document.querySelectorAll('[data-rivela]');
+
+if (!pocoMovimento && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('rivela');
+    const osservatore = new IntersectionObserver(voci => {
+        voci.forEach(voce => {
+            if (!voce.isIntersecting) return;
+            voce.target.classList.add('visto');
+            osservatore.unobserve(voce.target);
+        });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+
+    // un piccolo ritardo per ogni fratello marcato, così entrano uno dopo l'altro
+    daRivelare.forEach(elemento => {
+        const fratelli = [...elemento.parentElement.children].filter(f => f.hasAttribute('data-rivela'));
+        elemento.style.setProperty('--ritardo', `${fratelli.indexOf(elemento) * 80}ms`);
+        osservatore.observe(elemento);
+    });
+}
+
+// CONTATTI: copia l'indirizzo
+const tastoCopia = document.getElementById('copia-mail');
+const statoCopia = document.getElementById('stato-copia');
+const testoCopia = tastoCopia.textContent;
+const indirizzo = 'zappullavlad@gmail.com';
+let attesaCopia;
+
+// se l'API degli appunti non è disponibile (pagina non sicura, permessi), si prova alla vecchia maniera
+function copiaAllaVecchia(testo) {
+    const campo = document.createElement('textarea');
+    campo.value = testo;
+    campo.setAttribute('readonly', '');
+    campo.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.append(campo);
+    campo.select();
+    const riuscita = document.execCommand('copy');
+    campo.remove();
+    tastoCopia.focus();
+    if (!riuscita) throw new Error('copia non riuscita');
+}
+
+tastoCopia.addEventListener('click', async () => {
+    clearTimeout(attesaCopia);
     try {
-        await navigator.clipboard.writeText(EMAIL);
-        toast('Indirizzo copiato');
-    } catch (e) {
-        toast(`Copia non riuscita, l'indirizzo è ${EMAIL}`);
-    }
-});
-
-const form = $('#contact-form');
-const fields = [
-    [$('#cf-name'), $('#cf-name-err')],
-    [$('#cf-message'), $('#cf-message-err')]
-];
-
-function validate(input, err) {
-    const ok = input.value.trim() !== '';
-    err.hidden = ok;
-    input.setAttribute('aria-invalid', String(!ok));
-    if (!ok) input.setAttribute('aria-describedby', err.id);
-    else input.removeAttribute('aria-describedby');
-    return ok;
-}
-
-fields.forEach(([input, err]) => {
-    input.addEventListener('blur', () => { if (input.value) validate(input, err); });
-    input.addEventListener('input', () => { if (!err.hidden) validate(input, err); });
-});
-
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const results = fields.map(([i, err]) => validate(i, err));
-    const firstBad = results.indexOf(false);
-    if (firstBad !== -1) {
-        fields[firstBad][0].focus();
-        return;
-    }
-    const name = $('#cf-name').value.trim();
-    const subject = encodeURIComponent(`Contatto dal portfolio: ${name}`);
-    const body = encodeURIComponent($('#cf-message').value.trim() + `\n\n${name}`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-    toast('Si sta aprendo il tuo programma di posta');
-});
-
-// ---------- Testo animato nell'hero ----------
-(function typeRoles() {
-    const el = $('#typed');
-    if (reduceMotion) return;
-    let r = 0, c = ROLES[0].length, deleting = true;
-    function tick() {
-        const word = ROLES[r];
-        c += deleting ? -1 : 1;
-        el.textContent = word.slice(0, c);
-        let delay = deleting ? 40 : 80;
-        if (!deleting && c === word.length) { deleting = true; delay = 1800; }
-        else if (deleting && c === 0) { deleting = false; r = (r + 1) % ROLES.length; delay = 300; }
-        setTimeout(tick, delay);
-    }
-    setTimeout(tick, 1800);
-})();
-
-// ---------- Link attivo nella navbar ----------
-const navLinks = document.querySelectorAll('.nav-links a');
-const spy = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        navLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === `#${entry.target.id}`));
-    });
-}, { rootMargin: '-45% 0px -50% 0px' });
-document.querySelectorAll('main section[id]').forEach((s) => spy.observe(s));
-
-// ---------- Comparsa allo scroll ----------
-const revealer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            revealer.unobserve(entry.target);
+        try {
+            await navigator.clipboard.writeText(indirizzo);
+        } catch {
+            copiaAllaVecchia(indirizzo);
         }
-    });
-}, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach((el) => revealer.observe(el));
-
-// ---------- Avvio ----------
-$('#year').textContent = new Date().getFullYear();
-renderProjects();
+        tastoCopia.textContent = 'Indirizzo copiato';
+        tastoCopia.classList.add('fatto');
+        statoCopia.textContent = 'Indirizzo email copiato negli appunti.';
+    } catch {
+        tastoCopia.textContent = 'Copia non riuscita';
+        statoCopia.textContent = 'Copia non riuscita: seleziona l\'indirizzo a mano.';
+    }
+    attesaCopia = setTimeout(() => {
+        tastoCopia.textContent = testoCopia;
+        tastoCopia.classList.remove('fatto');
+        statoCopia.textContent = '';
+    }, 2500);
+});
