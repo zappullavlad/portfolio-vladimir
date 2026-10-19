@@ -10,6 +10,14 @@
   Cross-Origin-Opener-Policy: same-origin
   X-Frame-Options: DENY
 
+# Gli stessi file rispondono anche su questi indirizzi: restano raggiungibili,
+# ma i motori di ricerca devono indicizzare solo https://vladzappulla.com
+https://portfolio.vladzappulla.com/*
+  X-Robots-Tag: noindex
+
+https://:nome.zappullavlad.workers.dev/*
+  X-Robots-Tag: noindex
+
 # i font non cambiano mai nome finché non li cambio io: il browser può tenerli a lungo
 /font/*
   Cache-Control: public, max-age=31536000, immutable

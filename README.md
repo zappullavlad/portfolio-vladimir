@@ -10,7 +10,9 @@ Online: https://vladzappulla.com (www e http vengono reindirizzati qui; risponde
 public/            tutto ciò che va online (e solo questo)
   index.html
   favicon.svg
-  _headers         header di sicurezza e cache, letti da Cloudflare (non servito)
+  _headers         header di sicurezza, cache e noindex sugli indirizzi secondari, letti da Cloudflare (non servito)
+  robots.txt       indica la sitemap ai motori di ricerca
+  sitemap.xml      l'unica pagina del sito, su https://vladzappulla.com/
   css/style.css
   js/script.js
   font/            Fraunces e Host Grotesk, woff2, sottoinsieme latino (SIL OFL)
