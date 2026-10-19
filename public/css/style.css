@@ -6,7 +6,7 @@
     font-style: normal;
     font-weight: 300 600;
     font-display: swap;
-    src: url("font/fraunces.woff2") format("woff2");
+    src: url("../font/fraunces.woff2") format("woff2");
 }
 
 @font-face {
@@ -14,7 +14,7 @@
     font-style: italic;
     font-weight: 300 600;
     font-display: swap;
-    src: url("font/fraunces-corsivo.woff2") format("woff2");
+    src: url("../font/fraunces-corsivo.woff2") format("woff2");
 }
 
 @font-face {
@@ -22,7 +22,7 @@
     font-style: normal;
     font-weight: 300 700;
     font-display: swap;
-    src: url("font/host-grotesk.woff2") format("woff2");
+    src: url("../font/host-grotesk.woff2") format("woff2");
 }
 
 /* VARIABILI GLOBALI
