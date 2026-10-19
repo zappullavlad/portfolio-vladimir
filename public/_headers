@@ -1,8 +1,9 @@
 # Header di sicurezza per tutte le pagine (li legge Cloudflare Workers, il file non viene servito).
 # Il sito carica solo file propri: script, stili, font e immagini dallo stesso dominio.
 # data: nelle immagini serve alla grana di fondo, un SVG scritto dentro style.css.
+# Unica eccezione: lo script di Cloudflare Web Analytics (statistiche senza cookie) e il suo invio dei dati.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
