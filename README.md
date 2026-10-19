@@ -2,7 +2,7 @@
 
 Sito personale statico in HTML, CSS e JavaScript, senza framework né build.
 
-Online: https://portfolio.vladzappulla.com/
+Online: https://vladzappulla.com (www e http vengono reindirizzati qui; risponde anche su portfolio.vladzappulla.com e portfolio-vladimir.zappullavlad.workers.dev)
 
 ## Struttura
 
