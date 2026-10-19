@@ -36,13 +36,23 @@ function chiLeggeIlProfilo() {
 schermoStretto.addEventListener('change', chiLeggeIlProfilo);
 chiLeggeIlProfilo();
 
+// Dove il browser lega le animazioni CSS allo scorrimento (style.css), il movimento lo fa lui,
+// in sincrono con il dito; lo script tiene solo gli stati (pulsante premibile, testi del telefono).
+// Altrove lo script muove tutto scrivendo le variabili a ogni fotogramma.
+const muoveIlCss = 'CSS' in window && CSS.supports('animation-timeline: view()');
+
 // IL PORTATILE: si apre mentre si scorre, poi la vista gli gira davanti
 const scenaPortatile = document.querySelector('.scena--portatile');
 
 function muoviPortatile() {
     const p = avanzamento(scenaPortatile);
-    const alto = portatile.offsetHeight;
     const apre = morbido(limita((p - 0.03) / 0.42));
+
+    // finché il portatile non è aperto, il pulsante dentro lo schermo non si può premere
+    scenaPortatile.classList.toggle('chiuso', apre < 0.95);
+    if (muoveIlCss) return;
+
+    const alto = portatile.offsetHeight;
     const avvicina = morbido(limita((p - 0.5) / 0.36));
 
     // chiuso e visto dall'alto -> aperto -> di fronte, a tutto schermo
@@ -52,9 +62,6 @@ function muoviPortatile() {
     const chiuso = 0.1 * innerHeight - 0.72 * alto;
     const aperto = 0.05 * innerHeight - 0.265 * alto;
     const sposta = tra(tra(chiuso, aperto, apre), 0, avvicina);
-
-    // finché il portatile non è aperto, il pulsante dentro lo schermo non si può premere
-    scenaPortatile.classList.toggle('chiuso', apre < 0.95);
 
     const stile = scenaPortatile.style;
     stile.setProperty('--apri', apri.toFixed(2));
@@ -70,15 +77,21 @@ const finestra = document.getElementById('finestra');
 const scorriTelefono = document.getElementById('scorri-telefono');
 const passi = scorriTelefono.querySelectorAll('.passo');
 
-function muoviVini() {
-    const entrata = limita((innerHeight - finestra.getBoundingClientRect().top) / (innerHeight * 0.9));
-    finestra.style.setProperty('--s', tra(0.86, 1, frena(entrata)).toFixed(4));
+let passoAttivo = 0;
 
+function muoviVini() {
     const p = avanzamento(scorriTelefono);
-    scorriTelefono.style.setProperty('--scorri', p.toFixed(4));
     // i testi cambiano quando nel telefono passano l'apertura, la vetrina e l'elenco
     const quale = p < 0.14 ? 0 : p < 0.42 ? 1 : 2;
-    passi.forEach((passo, indice) => passo.classList.toggle('attivo', indice === quale));
+    if (quale !== passoAttivo) {
+        passoAttivo = quale;
+        passi.forEach((passo, indice) => passo.classList.toggle('attivo', indice === quale));
+    }
+    if (muoveIlCss) return;
+
+    const entrata = limita((innerHeight - finestra.getBoundingClientRect().top) / (innerHeight * 0.9));
+    finestra.style.setProperty('--s', tra(0.86, 1, frena(entrata)).toFixed(4));
+    scorriTelefono.style.setProperty('--scorri', p.toFixed(4));
 }
 
 // Il link attivo della barra segue la sezione che sta a metà schermo

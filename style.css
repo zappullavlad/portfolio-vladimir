@@ -47,12 +47,21 @@ body {
     font-size: 1.0625rem;
     line-height: 1.6;
     color: var(--testo);
+    background: var(--fondo);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* le luci di fondo stanno ferme su un livello loro:
+   con background-attachment: fixed il telefono ridipingeva tutta la pagina a ogni scorrimento */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background:
         radial-gradient(ellipse 70% 55% at 85% -10%, rgb(168 68 79 / 0.16), transparent 70%),
-        radial-gradient(ellipse 50% 45% at -10% 110%, rgb(168 68 79 / 0.07), transparent 70%),
-        var(--fondo);
-    background-attachment: fixed;
-    -webkit-font-smoothing: antialiased;
+        radial-gradient(ellipse 50% 45% at -10% 110%, rgb(168 68 79 / 0.07), transparent 70%);
 }
 
 /* grana leggera sopra tutto, non riceve clic */
@@ -149,6 +158,15 @@ main:focus {
     border-bottom-color: rgb(58 46 44 / 0.6);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
+}
+
+/* sui touch la sfocatura sotto la barra costa un ricalcolo a ogni fotogramma: meglio un fondo pieno */
+@media (pointer: coarse) {
+    .sotto .bar {
+        background: rgb(21 16 15 / 0.95);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
 }
 
 .bar a {
@@ -491,13 +509,21 @@ h1 em,
     width: 100%;
     height: 100%;
     border-radius: calc(var(--w) * 0.012) calc(var(--w) * 0.012) calc(var(--w) * 0.03) calc(var(--w) * 0.03);
-    background:
-        linear-gradient(rgb(255 240 230 / calc(var(--luce) * 0.1)), transparent 45%),
-        linear-gradient(#3a3331, #252020);
+    background: linear-gradient(#3a3331, #252020);
     box-shadow: 0 0 7rem 1.5rem rgb(var(--ombra) / 0.7);
     transform-style: preserve-3d;
     transform-origin: 50% 0;
     transform: rotateX(90deg);
+}
+
+/* il riflesso dello schermo sulla base: cambia solo l'opacità, così non si ridipinge */
+.portatile__base::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(rgb(255 240 230 / 0.1), transparent 45%);
+    opacity: var(--luce);
 }
 
 .portatile__tasti {
@@ -1056,6 +1082,169 @@ h1 em,
 .rivela [data-rivela].visto {
     opacity: 1;
     transform: none;
+}
+
+/* ANIMAZIONI LEGATE ALLO SCORRIMENTO
+   Dove il browser le supporta, portatile, finestra e telefono si muovono con animazioni CSS
+   agganciate allo scorrimento: le calcola il compositore insieme allo scroll, senza aspettare
+   lo script, ed è questo che le rende fluide sul telefono. Le percentuali sono le stesse
+   soglie che lo script usa dove queste animazioni mancano (script.js, muoviPortatile). */
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .scena--portatile {
+            view-timeline: --portatile block;
+            /* auto sottrarrebbe lo scroll-padding della barra: qui conta tutto lo schermo, come nello script */
+            view-timeline-inset: 0;
+        }
+
+        .scorri-telefono {
+            view-timeline: --telefono block;
+            /* auto sottrarrebbe lo scroll-padding della barra: qui conta tutto lo schermo, come nello script */
+            view-timeline-inset: 0;
+        }
+
+        .finestra {
+            view-timeline: --finestra block;
+            /* auto sottrarrebbe lo scroll-padding della barra: qui conta tutto lo schermo, come nello script */
+            view-timeline-inset: 0;
+        }
+
+        .portatile,
+        .portatile__coperchio,
+        .portatile__base::before,
+        .schermo::after,
+        .intro {
+            animation-duration: 1ms;
+            animation-fill-mode: both;
+            animation-timing-function: linear;
+            animation-timeline: --portatile;
+            animation-range: contain 0% contain 100%;
+        }
+
+        .portatile {
+            animation-name: portatile-vista;
+            will-change: transform;
+        }
+
+        .portatile__coperchio {
+            animation-name: portatile-apre;
+            will-change: transform;
+        }
+
+        .portatile__base::before {
+            animation-name: portatile-luce;
+        }
+
+        .schermo::after {
+            animation-name: portatile-buio;
+        }
+
+        .intro {
+            animation-name: intro-esce;
+        }
+
+        .telefono img {
+            animation: telefono-scorre 1ms linear both;
+            animation-timeline: --telefono;
+            animation-range: contain 0% contain 100%;
+        }
+
+        /* la finestra cresce mentre il suo bordo alto sale dal fondo fino al 10% dello schermo */
+        .finestra__vetro {
+            animation: finestra-cresce 1ms cubic-bezier(0.33, 1, 0.68, 1) both;
+            animation-timeline: --finestra;
+            animation-range: cover 0% cover 90svh;
+        }
+    }
+}
+
+/* chiuso e visto dall'alto -> aperto -> di fronte, a tutto schermo */
+@keyframes portatile-vista {
+    0%,
+    3% {
+        transform: translateY(calc(10svh - var(--w) * 0.45)) rotateX(-62deg) scale3d(0.5, 0.5, 0.5);
+        animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    45%,
+    50% {
+        transform: translateY(calc(5svh - var(--w) * 0.1656)) rotateX(-14deg) scale3d(0.62, 0.62, 0.62);
+        animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    86%,
+    100% {
+        transform: translateY(0) rotateX(0deg) scale3d(1, 1, 1);
+    }
+}
+
+@keyframes portatile-apre {
+    0%,
+    3% {
+        transform: rotateX(-89deg) translateZ(-2px);
+        animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    45%,
+    50% {
+        transform: rotateX(12deg) translateZ(-2px);
+        animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    86%,
+    100% {
+        transform: rotateX(0deg) translateZ(-2px);
+    }
+}
+
+/* lo schermo si accende a metà apertura */
+@keyframes portatile-luce {
+    0%,
+    20.7% {
+        opacity: 0;
+    }
+    27.3%,
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes portatile-buio {
+    0%,
+    20.7% {
+        opacity: 1;
+    }
+    27.3%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes intro-esce {
+    0%,
+    2% {
+        opacity: 1;
+        transform: none;
+    }
+    14%,
+    100% {
+        opacity: 0;
+        transform: translateY(-3rem);
+    }
+}
+
+@keyframes telefono-scorre {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(0, -72.88%, 0);
+    }
+}
+
+@keyframes finestra-cresce {
+    from {
+        transform: scale(0.86);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 
 /* SENZA ANIMAZIONI: niente sezioni bloccate, tutto in fila */
