@@ -16,7 +16,9 @@ public/            tutto ciò che va online (e solo questo)
   css/style.css
   js/script.js
   font/            Fraunces e Host Grotesk, woff2, sottoinsieme latino (SIL OFL)
+  img/og.jpg       immagine di anteprima per i link condivisi (1200x630)
   img/vini/        schermate del sito della carta dei vini
+strumenti/         anteprima-social.html, sorgente di public/img/og.jpg (non va online)
 wrangler.jsonc     configurazione di Cloudflare Workers
 ```
 ## Pubblicazione
