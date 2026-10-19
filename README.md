@@ -17,17 +17,6 @@ public/            tutto ciò che va online (e solo questo)
   img/vini/        schermate del sito della carta dei vini
 wrangler.jsonc     configurazione di Cloudflare Workers
 ```
-
-## Vedere il sito in locale
-
-Basta un qualsiasi server statico puntato su `public/`, per esempio:
-
-```
-npx serve public
-```
-
-Meglio non aprire `index.html` direttamente dal disco: da `file://` alcuni browser bloccano i font.
-
 ## Pubblicazione
 
 Ogni push su `main` viene pubblicato da Cloudflare Workers Builds, che esegue `wrangler deploy` con la configurazione di `wrangler.jsonc`. Non servono variabili d'ambiente né segreti.
