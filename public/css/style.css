@@ -484,10 +484,14 @@ h1 em,
     position: absolute;
     inset: 0;
     border-radius: calc(var(--w) * 0.018);
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 
+/* Safari a volte ignora backface-visibility: le due facce stanno a 2px di distanza,
+   così anche lì si vede sempre quella rivolta verso chi guarda. */
 .portatile__fronte {
+    transform: translateZ(1px);
     padding: 1.5% 1.3% 2.1%;
     background: #0a0707;
     box-shadow: inset 0 0 0 1px #2f2725;
@@ -498,7 +502,7 @@ h1 em,
     place-items: center;
     background: linear-gradient(165deg, #48403e, #2a2423 55%, #1e1918);
     box-shadow: inset 0 0 0 1px #544a47;
-    transform: rotateX(180deg);
+    transform: rotateX(180deg) translateZ(1px);
 }
 
 .portatile__retro span {
