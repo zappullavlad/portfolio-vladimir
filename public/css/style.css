@@ -868,6 +868,58 @@ h1 em,
     text-wrap: pretty;
 }
 
+/* le tre carte online: menu, vini, bar */
+.carte {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    list-style: none;
+}
+
+.carta-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    height: 100%;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--linea);
+    border-radius: 1rem;
+    background: var(--fondo-2);
+    color: var(--testo);
+    text-decoration: none;
+    transition: border-color var(--rapido) var(--curva), background-color var(--rapido) var(--curva);
+}
+
+.carta-link:hover {
+    border-color: var(--vino);
+    background: var(--superficie);
+}
+
+.carta-link__nome {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2vw, 1.55rem);
+    line-height: 1.2;
+}
+
+.carta-link__indirizzo {
+    font-size: 0.92rem;
+    color: var(--tenue);
+}
+
+.carta-link__apri {
+    margin-top: 0.75rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--vino-chiaro);
+}
+
+@media (max-width: 760px) {
+    .carte {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* l'apertura del sito, in una cornice che cresce entrando */
 .finestra {
     max-width: calc(var(--max) + 2 * var(--gutter));

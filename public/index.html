@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vladimir Zappulla, web developer</title>
-    <meta name="description" content="Vladimir Zappulla, web developer freelance e studente di Informatica a Catania. Caso studio: la carta dei vini online del ristorante Oxidiana.">
+    <meta name="description" content="Vladimir Zappulla, web developer freelance e studente di Informatica a Catania. Caso studio: il menu, la carta dei vini e la carta del bar online del ristorante Oxidiana.">
     <meta name="theme-color" content="#15100f">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="it_IT">
     <meta property="og:url" content="https://vladzappulla.com/">
     <link rel="canonical" href="https://vladzappulla.com/">
     <meta property="og:title" content="Vladimir Zappulla, web developer">
-    <meta property="og:description" content="Web developer freelance a Catania. Caso studio: la carta dei vini online del ristorante Oxidiana.">
+    <meta property="og:description" content="Web developer freelance a Catania. Caso studio: il menu digitale del ristorante Oxidiana, con carta dei vini e carta del bar.">
     <meta property="og:image" content="https://vladzappulla.com/img/og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -93,14 +93,14 @@
                             <li>Cloudflare</li>
                         </ul>
                         <p class="profilo__voce">Lavoro in evidenza</p>
-                        <p class="profilo__progetto"><a href="#carta">La carta dei vini online del ristorante Oxidiana</a></p>
+                        <p class="profilo__progetto"><a href="#carta">Il menu digitale del ristorante Oxidiana: piatti, vini e cocktail</a></p>
                         <a class="profilo__apri" href="https://www.upwork.com/freelancers/~01bda8b907b40f8a60">Vedi il profilo su Upwork</a>
                     </div>
                 </div>
             </article>
         </section>
 
-        <!-- IL PROGETTO: la carta dei vini -->
+        <!-- IL PROGETTO: il menu digitale di Oxidiana (menu, carta dei vini, carta del bar) -->
         <section id="carta" class="progetto" data-zona aria-labelledby="titolo-carta">
             <div class="wrap progetto__testa">
                 <div class="progetto__indice" data-rivela>
@@ -109,23 +109,48 @@
                 </div>
 
                 <div class="progetto__titoli">
-                    <h2 class="titolo" id="titolo-carta" data-rivela>La carta dei vini di <em>Oxidiana</em></h2>
-                    <p class="lead" data-rivela>Il sito che ho creato per un ristorante di Catania. 165 etichette da sfogliare dal telefono.</p>
+                    <h2 class="titolo" id="titolo-carta" data-rivela>Il menu digitale di <em>Oxidiana</em></h2>
+                    <p class="lead" data-rivela>Tre carte che ho creato per un ristorante di Catania: il menu dei piatti, la carta dei vini e la carta del bar.</p>
                 </div>
 
                 <dl class="scheda" data-rivela>
                     <div><dt>Cliente</dt><dd>Oxidiana, Catania</dd></div>
                     <div><dt>Ruolo</dt><dd>Design e sviluppo</dd></div>
-                    <div><dt>Tecnologie</dt><dd>HTML, CSS, JavaScript, three.js</dd></div>
-                    <div><dt>Lingue</dt><dd>Italiano e inglese</dd></div>
+                    <div><dt>Tecnologie</dt><dd>HTML, CSS, JavaScript, three.js, Cloudflare Workers</dd></div>
+                    <div><dt>Carte</dt><dd>Menu, vini e cocktail, ognuna con la sua dashboard</dd></div>
                 </dl>
+
+                <!-- le tre carte online, da aprire -->
+                <ul class="carte" aria-label="Le carte online di Oxidiana" data-rivela>
+                    <li>
+                        <a class="carta-link" href="https://menu.oxidiana.it/" target="_blank" rel="noopener">
+                            <span class="carta-link__nome">Menu</span>
+                            <span class="carta-link__indirizzo">menu.oxidiana.it</span>
+                            <span class="carta-link__apri">Apri il sito <span aria-hidden="true">&#8599;</span></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="carta-link" href="https://vini.oxidiana.it/" target="_blank" rel="noopener">
+                            <span class="carta-link__nome">Carta dei vini</span>
+                            <span class="carta-link__indirizzo">vini.oxidiana.it</span>
+                            <span class="carta-link__apri">Apri il sito <span aria-hidden="true">&#8599;</span></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="carta-link" href="https://cocktail.oxidiana.it/" target="_blank" rel="noopener">
+                            <span class="carta-link__nome">Carta del bar</span>
+                            <span class="carta-link__indirizzo">cocktail.oxidiana.it</span>
+                            <span class="carta-link__apri">Apri il sito <span aria-hidden="true">&#8599;</span></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
 
             <figure class="finestra" id="finestra">
                 <div class="finestra__vetro">
                     <img src="img/vini/apertura.jpg" alt="L'apertura del sito: fondo scuro, due carpe koi e il titolo La carta dei vini" width="1200" height="630" loading="lazy" decoding="async">
                 </div>
-                <figcaption><span>Apertura</span> La prima schermata: fondo scuro, due carpe koi e il titolo.</figcaption>
+                <figcaption><span>Carta dei vini</span> La prima schermata: fondo scuro, due carpe koi e il titolo.</figcaption>
             </figure>
 
             <div class="scorri-telefono" id="scorri-telefono">
@@ -152,12 +177,12 @@
 
             <div class="wrap progetto__chiusa">
                 <dl class="cifre">
-                    <div data-rivela><dt>Etichette in carta</dt><dd>165</dd></div>
-                    <div data-rivela><dt>Lingue, italiano e inglese</dt><dd>2</dd></div>
+                    <div data-rivela><dt>Carte online: menu, vini e bar</dt><dd>3</dd></div>
+                    <div data-rivela><dt>Etichette nella carta dei vini</dt><dd>165</dd></div>
                     <div data-rivela><dt>Bottiglie da ruotare col dito</dt><dd>3D</dd></div>
                 </dl>
                 <div class="progetto__cta" data-rivela>
-                    <p>Hai un locale e vuoi una carta così?</p>
+                    <p>Hai un locale e vuoi un menu così?</p>
                     <a class="tasto" href="#contatti">Parliamone</a>
                 </div>
             </div>
